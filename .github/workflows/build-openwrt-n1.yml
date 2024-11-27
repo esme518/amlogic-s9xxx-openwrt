@@ -228,10 +228,6 @@ env:
   kernel_usage: ${{ inputs.kernel_usage || 'stable' }}
   openwrt_storage: ${{ inputs.openwrt_storage || 'save' }}
   builder_name: ${{ inputs.builder_name || 'esme518' }}
-  FEEDS_CONF: config/${{ env.source_branch }}/feeds.conf.default
-  CONFIG_FILE: config/${{ env.source_branch }}/config
-  DIY_P1_SH: config/${{ env.source_branch }}/diy-part1.sh
-  DIY_P2_SH: config/${{ env.source_branch }}/diy-part2.sh
   TZ: America/New_York
 
 jobs:
@@ -242,6 +238,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set the GITHUB_ENV
+        run: |
+          echo "FEEDS_CONF=config/${{ env.source_branch }}/feeds.conf.default" >> "$GITHUB_ENV"
+          echo "CONFIG_FILE=config/${{ env.source_branch }}/config" >> "$GITHUB_ENV"
+          echo "DIY_P1_SH=config/${{ env.source_branch }}/diy-part1.sh" >> "$GITHUB_ENV"
+          echo "DIY_P2_SH=config/${{ env.source_branch }}/diy-part2.sh" >> "$GITHUB_ENV"
 
       - name: Initialization environment
         id: init
