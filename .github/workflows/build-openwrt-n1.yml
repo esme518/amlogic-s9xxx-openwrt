@@ -220,10 +220,18 @@ on:
     - cron: "0 22 * * 4"
 
 env:
-  FEEDS_CONF: config/${{ inputs.source_branch }}/feeds.conf.default
-  CONFIG_FILE: config/${{ inputs.source_branch }}/config
-  DIY_P1_SH: config/${{ inputs.source_branch }}/diy-part1.sh
-  DIY_P2_SH: config/${{ inputs.source_branch }}/diy-part2.sh
+  source_branch: ${{ inputs.source_branch || 'immortalwrt-rel' }}
+  openwrt_board: ${{ inputs.openwrt_board || 's905d' }}
+  openwrt_kernel: ${{ inputs.openwrt_kernel || '5.15.167' }}
+  auto_kernel: ${{ inputs.auto_kernel || 'false' }}
+  kernel_repo: ${{ inputs.kernel_repo || 'ophub/kernel' }}
+  kernel_usage: ${{ inputs.kernel_usage || 'stable' }}
+  openwrt_storage: ${{ inputs.openwrt_storage || 'save' }}
+  builder_name: ${{ inputs.builder_name || 'esme518' }}
+  FEEDS_CONF: config/${{ env.source_branch }}/feeds.conf.default
+  CONFIG_FILE: config/${{ env.source_branch }}/config
+  DIY_P1_SH: config/${{ env.source_branch }}/diy-part1.sh
+  DIY_P2_SH: config/${{ env.source_branch }}/diy-part2.sh
   TZ: America/New_York
 
 jobs:
@@ -275,33 +283,33 @@ jobs:
           sudo chown -R runner.runner /builder
           df -Th
 
-      - name: Clone source code [ ${{ inputs.source_branch }} ]
+      - name: Clone source code [ ${{ env.source_branch }} ]
         id: codes
         working-directory: /builder
         if: ${{ steps.init.outputs.status }} == 'success' && !cancelled()
         run: |
           # Set up compilation source code
-          if [[ "${{ inputs.source_branch }}" == *"openwrt"* ]]; then
+          if [[ "${{ env.source_branch }}" == *"openwrt"* ]]; then
               REPO_URL="https://github.com/openwrt/openwrt"
               REPO_BRANCH="main"
               TAGS_NAME="official"
-          elif [[ "${{ inputs.source_branch }}" == *"lede"* ]]; then
+          elif [[ "${{ env.source_branch }}" == *"lede"* ]]; then
               REPO_URL="https://github.com/coolsnowwolf/lede"
               REPO_BRANCH="master"
               TAGS_NAME="lede"
-          elif [[ "${{ inputs.source_branch }}" == *"immortalwrt-rel"* ]]; then
+          elif [[ "${{ env.source_branch }}" == *"immortalwrt-rel"* ]]; then
               REPO_URL="https://github.com/immortalwrt/immortalwrt"
               REPO_BRANCH="v23.05.4"
               TAGS_NAME="immortalwrt_rel"
-          elif [[ "${{ inputs.source_branch }}" == *"immortalwrt-24.10"* ]]; then
+          elif [[ "${{ env.source_branch }}" == *"immortalwrt-24.10"* ]]; then
               REPO_URL="https://github.com/immortalwrt/immortalwrt"
               REPO_BRANCH="openwrt-24.10"
               TAGS_NAME="immortalwrt_24.10"
-          elif [[ "${{ inputs.source_branch }}" == *"immortalwrt-23.05"* ]]; then
+          elif [[ "${{ env.source_branch }}" == *"immortalwrt-23.05"* ]]; then
               REPO_URL="https://github.com/immortalwrt/immortalwrt"
               REPO_BRANCH="openwrt-23.05"
               TAGS_NAME="immortalwrt_23.05"
-          elif [[ "${{ inputs.source_branch }}" == *"immortalwrt"* ]]; then
+          elif [[ "${{ env.source_branch }}" == *"immortalwrt"* ]]; then
               REPO_URL="https://github.com/immortalwrt/immortalwrt"
               REPO_BRANCH="master"
               TAGS_NAME="immortalwrt"
@@ -316,7 +324,7 @@ jobs:
           ln -sf /builder/openwrt /home/runner/work/_actions/ophub/amlogic-s9xxx-openwrt/main/openwrt
 
           # Set output information
-          echo "build_tag=OpenWrt_${TAGS_NAME}_${{ inputs.openwrt_storage }}_$(date +"%Y.%m")" >> ${GITHUB_OUTPUT}
+          echo "build_tag=OpenWrt_${TAGS_NAME}_${{ env.openwrt_storage }}_$(date +"%Y.%m")" >> ${GITHUB_OUTPUT}
           echo -e "REPO_URL: [ ${REPO_URL} ]\nREPO_BRANCH: [ ${REPO_BRANCH} ]\nTAGS_NAME: [ ${TAGS_NAME} ]"
           df -hT ${PWD}
           echo "REPO_URL=${REPO_URL}/tree/${REPO_BRANCH}" >> ${GITHUB_OUTPUT}
@@ -396,12 +404,12 @@ jobs:
         uses: ophub/amlogic-s9xxx-openwrt@main
         with:
           openwrt_path: openwrt/output/*rootfs.tar.gz
-          openwrt_board: ${{ inputs.openwrt_board }}
-          openwrt_kernel: ${{ inputs.openwrt_kernel }}
-          auto_kernel: ${{ inputs.auto_kernel }}
-          kernel_repo: ${{ inputs.kernel_repo }}
-          kernel_usage: ${{ inputs.kernel_usage }}
-          builder_name: ${{ inputs.builder_name }}
+          openwrt_board: ${{ env.openwrt_board }}
+          openwrt_kernel: ${{ env.openwrt_kernel }}
+          auto_kernel: ${{ env.auto_kernel }}
+          kernel_repo: ${{ env.kernel_repo }}
+          kernel_usage: ${{ env.kernel_usage }}
+          builder_name: ${{ env.builder_name }}
 
       - name: Upload the packaged OpenWrt
         uses: ncipollo/release-action@main
