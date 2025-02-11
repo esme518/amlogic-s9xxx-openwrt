@@ -176,7 +176,7 @@ on:
       openwrt_kernel:
         description: "Select kernel version"
         required: false
-        default: "5.15.167"
+        default: "6.6.73"
       auto_kernel:
         description: "Auto use the latest kernel"
         required: false
@@ -222,7 +222,7 @@ on:
 env:
   source_branch: ${{ inputs.source_branch || 'immortalwrt-rel' }}
   openwrt_board: ${{ inputs.openwrt_board || 's905d' }}
-  openwrt_kernel: ${{ inputs.openwrt_kernel || '5.15.167' }}
+  openwrt_kernel: ${{ inputs.openwrt_kernel || '6.6.73' }}
   auto_kernel: ${{ inputs.auto_kernel || 'false' }}
   kernel_repo: ${{ inputs.kernel_repo || 'ophub/kernel' }}
   kernel_usage: ${{ inputs.kernel_usage || 'stable' }}
@@ -302,7 +302,7 @@ jobs:
               TAGS_NAME="lede"
           elif [[ "${{ env.source_branch }}" == *"immortalwrt-rel"* ]]; then
               REPO_URL="https://github.com/immortalwrt/immortalwrt"
-              REPO_BRANCH="v23.05.4"
+              REPO_BRANCH="v24.10.0"
               TAGS_NAME="immortalwrt_rel"
           elif [[ "${{ env.source_branch }}" == *"immortalwrt-24.10"* ]]; then
               REPO_URL="https://github.com/immortalwrt/immortalwrt"
