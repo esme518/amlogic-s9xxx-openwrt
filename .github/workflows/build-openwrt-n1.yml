@@ -176,11 +176,11 @@ on:
       openwrt_kernel:
         description: "Select kernel version"
         required: false
-        default: "6.6.73"
+        default: "6.6.y"
       auto_kernel:
         description: "Auto use the latest kernel"
         required: false
-        default: false
+        default: true
         type: boolean
       kernel_repo:
         description: "Set the kernel repository"
@@ -222,8 +222,8 @@ on:
 env:
   source_branch: ${{ inputs.source_branch || 'immortalwrt-rel' }}
   openwrt_board: ${{ inputs.openwrt_board || 's905d' }}
-  openwrt_kernel: ${{ inputs.openwrt_kernel || '6.6.73' }}
-  auto_kernel: ${{ inputs.auto_kernel || 'false' }}
+  openwrt_kernel: ${{ inputs.openwrt_kernel || '6.6.y' }}
+  auto_kernel: ${{ inputs.auto_kernel || 'true' }}
   kernel_repo: ${{ inputs.kernel_repo || 'ophub/kernel' }}
   kernel_usage: ${{ inputs.kernel_usage || 'stable' }}
   openwrt_storage: ${{ inputs.openwrt_storage || 'save' }}
