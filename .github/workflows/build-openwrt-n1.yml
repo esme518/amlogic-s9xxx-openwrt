@@ -302,7 +302,7 @@ jobs:
               TAGS_NAME="lede"
           elif [[ "${{ env.source_branch }}" == *"immortalwrt-rel"* ]]; then
               REPO_URL="https://github.com/immortalwrt/immortalwrt"
-              REPO_BRANCH="v24.10.0"
+              REPO_BRANCH="v24.10.1"
               TAGS_NAME="immortalwrt_rel"
           elif [[ "${{ env.source_branch }}" == *"immortalwrt-24.10"* ]]; then
               REPO_URL="https://github.com/immortalwrt/immortalwrt"
